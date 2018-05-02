@@ -18,7 +18,15 @@ class TwitterMentionsUserTransformer extends TransformerAbstract
             'id' => $tweet['id'],
             'created_at' => Carbon::parse($tweet['created_at'])->format('d/m/Y'),
             'text' => $tweet['text'],
-            'retweets' => $this->retweets($tweet['retweets'])
+            'retweet_count' => $tweet['retweet_count'],
+            'likes_count' => $tweet['favorite_count'],
+            'user' => [
+                'id' => $tweet['user']->id,
+                'name' => $tweet['user']->name,
+                'location' => $tweet['user']->location,
+                'description' => $tweet['user']->description
+            ]
+            //'retweets' => $this->retweets($tweet['retweets'])
         ];
     }
 

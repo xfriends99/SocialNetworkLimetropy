@@ -21,10 +21,10 @@ class TwitterController extends Controller
         $response = [
             'id' => $data['id'],
             'name' => $data['name'],
-            'followers_count' => $data['followers_count'],
-            'friends_count' => $data['friends_count'],
-            'listed_count' => $data['listed_count'],
-            'statuses_count' => $data['statuses_count'],
+            'followersCount' => $data['followers_count'],
+            'following' => $data['friends_count'],
+            'tweets' => $data['statuses_count'],
+            'likes' => $data['favourites_count']
         ];
 
         return response()->json(['error' => false,
@@ -34,7 +34,7 @@ class TwitterController extends Controller
     public function userTweets($id)
     {
         try {
-            $response = Twitter::getUserTimeline(['screen_name' => $id, 'format' => 'json']);
+            $response = Twitter::getUserTimeline(['screen_name' => $id, 'format' => 'json', 'count' => 200]);
         } catch(\Exception $e) {
             return [];
         }
@@ -42,7 +42,7 @@ class TwitterController extends Controller
         $posts = [];
         foreach (json_decode($response) as $tweet){
             $posts[$index] = (array)$tweet;
-            $posts[$index]['retweets'] = $this->userRetweets($tweet->id);
+            //$posts[$index]['retweets'] = $this->userRetweets($tweet->id);
             $index++;
         }
         $fractal = fractal($posts, new TwitterTweetsUserTransformer);
@@ -79,15 +79,15 @@ class TwitterController extends Controller
     public function userMentions($id)
     {
         try {
-            $response = Twitter::getMentionsTimeline(['screen_name' => $id, 'format' => 'json', 'count'=>200]);
+            $response = Twitter::getSearch(['q' => $id, 'format' => 'json', 'count'=>200]);
         } catch(\Exception $e) {
             return [];
         }
         $index = 0;
         $posts = [];
-        foreach (json_decode($response) as $tweet){
+        foreach (json_decode($response)->statuses as $tweet){
             $posts[$index] = (array)$tweet;
-            $posts[$index]['retweets'] = $this->userRetweets($tweet->id);
+            //$posts[$index]['retweets'] = $this->userRetweets($tweet->id);
             $index++;
         }
         $fractal = fractal($posts, new TwitterMentionsUserTransformer);

@@ -18,7 +18,9 @@ class TwitterTweetsUserTransformer extends TransformerAbstract
             'id' => $tweet['id'],
             'created_at' => Carbon::parse($tweet['created_at'])->format('d/m/Y'),
             'text' => $tweet['text'],
-            'retweets' => $this->retweets($tweet['retweets'])
+            'retweet_count' => $tweet['retweet_count'],
+            'likes_count' => $tweet['favorite_count'],
+            //'retweets' => $this->retweets($tweet['retweets'])
         ];
     }
 
